@@ -19,7 +19,7 @@ Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, dupl
 ## Getting Started
 ```bash
 ## inside repo top dir
-docker build -t atlasbank-instant-transfer-service:1.0 .
+sudo docker build -t atlasbank_instant-transfer-service:1.0 .
 ```
 
 

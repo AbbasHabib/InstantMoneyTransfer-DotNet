@@ -2,10 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+# Copy csproj and restore dependencies first (for caching)
 COPY *.sln .
 COPY InstantTransfers/*.csproj ./InstantTransfers/
 
-RUN dotnet restore
+
+RUN dotnet nuget locals all --clear
+RUN dotnet restore "InstantTransfers/InstantTransfers.csproj"
 
 # Copy the rest of the source code
 COPY InstantTransfers/. ./InstantTransfers/
@@ -13,7 +16,7 @@ COPY InstantTransfers/. ./InstantTransfers/
 WORKDIR /src/InstantTransfers
 
 # Build and publish the app
-RUN dotnet publish -c Release -o /app --no-restore
+RUN dotnet publish -c Release -o /app
 
 # Use the ASP.NET runtime image for production
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
@@ -25,6 +28,9 @@ COPY --from=build /app ./
 # Expose port 80
 EXPOSE 80
 
+# # Environment variables (optional)
+# ENV DOTNET_RUNNING_IN_CONTAINER=true
+# ENV DOTNET_PRINT_TELEMETRY_MESSAGE=false
 
 # Run the app
 ENTRYPOINT ["dotnet", "InstantTransfers.dll"]
