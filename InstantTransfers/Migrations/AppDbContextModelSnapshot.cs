@@ -41,7 +41,7 @@ namespace InstantTransfers.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("InstantTransfers.Models.Transaction", b =>
@@ -75,7 +75,7 @@ namespace InstantTransfers.Migrations
 
                     b.HasIndex("ToAccountId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("InstantTransfers.Models.Transaction", b =>

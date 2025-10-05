@@ -1,50 +1,47 @@
-using System.Threading.Tasks;
-using InstantTransfers.Infrastructure;
-using InstantTransfers.Models;
-using Microsoft.AspNetCore.Http;
+using InstantTransfers.DTOs.Account;
+using InstantTransfers.Services;
+using InstantTransfers.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace InstantTransfers.Controllers
+namespace InstantTransfers.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AccountController(IAccountService _service) : ControllerBase
 {
-    [Route("api/accounts")]
-    [ApiController]
-    // TODO: Abstract the DbContext usage into a service
-    public class AccountController(AppDbContext context) : ControllerBase
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<AccountResponseDto>>> GetAll()
     {
-        private readonly AppDbContext _context = context;
+        var result = await _service.GetAllAsync();
+        return Ok(result);
+    }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<AccountResponseDto>> GetById(long id)
+    {
+        var acc = await _service.GetByIdAsync(id);
+        return acc is null ? NotFound() : Ok(acc);
+    }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Account>>> GetAccounts()
-        {
-            return Ok( await _context.Accounts.ToListAsync());
-        }
+    [HttpPost]
+    public async Task<ActionResult<AccountResponseDto>> Create(AccountCreateDto dto)
+    {
+        var acc = await _service.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = acc.Id }, acc);
+    }
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult<AccountResponseDto>> Update(long id, AccountUpdateDto dto)
+    {
+        var updated = await _service.UpdateAsync(id, dto);
+        return updated is null ? NotFound() : Ok(updated);
+    }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Account>> GetAccount(long id)
-        {
-            var account = await _context.Accounts.FindAsync(id);
-            if (account == null)
-            {
-                return NotFound();
-            }
-            return Ok(account);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<Account>> CreateAccount(Account acc)
-        {
-            if (acc == null || acc.UserId < 0)
-            {
-                return BadRequest("Invalid account data.");
-            }
-
-            _context.Accounts.Add(acc);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetAccount), new { id = acc.Id }, acc);
-        }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        var deleted = await _service.DeleteAsync(id);
+        return deleted ? Ok($"deleted account id {id} successfully") : NotFound();
     }
 }

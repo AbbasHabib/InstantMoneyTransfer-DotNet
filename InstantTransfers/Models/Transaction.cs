@@ -21,6 +21,7 @@ public class Transaction
     [Range(0.01, double.MaxValue)]
     public decimal Amount { get; set; }
 
+    [Required]
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
     [MaxLength(50)]

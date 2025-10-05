@@ -9,6 +9,7 @@ public class Account
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
+    [Required]
     public long UserId { get; set; }
 
     [Column(TypeName = "decimal(18,2)")]
