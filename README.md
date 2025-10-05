@@ -133,5 +133,5 @@ dotnet ef database update
 ## WIP
 - Using Authentication and Authorization is not yet implemented. Only dummy entities and identity framework are present in the current code base
 - RAW SQL Query is used avoid racing issues, this shall be refactored to more generic solution that can work with any type of database.
-
+- More Test cases shall be implemented, and TDD shall be followed with new APIs implementation.
 
