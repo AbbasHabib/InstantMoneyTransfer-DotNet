@@ -10,7 +10,7 @@ Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, dupl
 - Create accounts with initial balances.  
 - Perform atomic money transfers between accounts.  
 - Prevent negative balances.  
-- Ensure **idempotency** — no duplicated or lost transfers.  
+- Ensure **idempotency** no duplicated or lost transfers.  
 - Handle concurrent transfers safely.  
 - Fully containerized with **Docker** and ready for **Kubernetes**.
 
@@ -19,7 +19,7 @@ Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, dupl
 # GettingStarted
 ## 🐳 Run with Docker
 1- Start the Databse Server using docker
-Notice Postgresql will the latest OutputScript.sql from InstantTransfers and migrate it to the DB
+Notice Postgresql will the use latest OutputScript.sql from InstantTransfers and migrate it to the DB
 ```bash
 cd postgresql
 sudo docker compose up -d
