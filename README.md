@@ -1,4 +1,4 @@
-# 💸 Instant Transfer API (.NET 8 + PostgreSQL)
+# 💸 Instant Money Transfer API (.NET 8 + PostgreSQL)
 
 A reliable and safe **Instant Transfer Service** for fintech systems.  
 Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, duplicate requests, and system reliability challenges.
@@ -17,6 +17,7 @@ Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, dupl
 ---
 
 ## Getting Started
+## 🐳 Run with Docker
 1- Start the Databse Server using docker
 Notice Postgresql will the latest OutputScript.sql from InstantTransfers and migrate it to the DB
 ```bash
@@ -33,7 +34,14 @@ Service would run now u can Access : http://localhost:5149/swagger/index.html
 To test different cases 
 
 
-## 🧠 Core Challenges & Solutions
+## Run Tests
+```bash
+# inside repo top dir
+dotnet build
+dotnet test InstantTransfers.Tests
+```
+
+## Challenges & Solutions
 
 ### 1. **Concurrent Transfers**
 **Problem:** Multiple transfers might target the same account at the same time, risking race conditions.  
@@ -90,7 +98,7 @@ Suggestion is using database connection pools and configure the number of pools 
 
 ---
 
-## 🧩 API Endpoints
+## API Endpoints
 
 ### Account Endpoints
 | Method | Endpoint            | Description            |
@@ -116,30 +124,14 @@ Suggestion is using database connection pools and configure the number of pools 
 
 ---
 
-## 🐳 Run with Docker
-
-## Packages used
+## 🛸 Add the DB migration
+On the dev enviroment you can migrate the DB with command
 ```bash
-    
+dotnet ef database update
 ```
 
+## WIP
+- Using Authentication and Authorization is not yet implemented. Only dummy entities and identity framework are present in the current code base
+- RAW SQL Query is used avoid racing issues, this shall be refactored to more generic solution that can work with any type of database.
 
 
-## add the DB migration
-```bash
-    dotnet ef database update
-```
-
-## add databse connection string to you user-secrets
-```bash
-    dotnet user-secrets init
-    dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=127.0.0.1;Port=5432;Database=atlasbank;Username=postgres;Password=somepassword"
-```
-
-
-## Run Tests
-```bash
-# inside repo top dir
-dotnet build
-dotnet test InstantTransfers.Tests
-```
