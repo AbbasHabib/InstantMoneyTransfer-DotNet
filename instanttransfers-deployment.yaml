@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instanttransfers-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instanttransfers-api
+  template:
+    metadata:
+      labels:
+        app: instanttransfers-api
+    spec:
+      containers:
+        - name: instanttransfers
+          image: atlasbank_instant-transfer-service:1.0
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: instanttransfers-service
+spec:
+  type: NodePort
+  selector:
+    app: instanttransfers-api
+  ports:
+    - port: 8080        # Cluster port
+      targetPort: 8080  # Container port
+      nodePort: 31459   # Host port

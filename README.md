@@ -16,7 +16,7 @@ Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, dupl
 
 ---
 
-## Getting Started
+# GettingStarted
 ## 🐳 Run with Docker
 1- Start the Databse Server using docker
 Notice Postgresql will the latest OutputScript.sql from InstantTransfers and migrate it to the DB
@@ -29,6 +29,15 @@ sudo docker compose up -d
 ## inside repo top dir
 sudo docker build -t atlasbank_instant-transfer-service:1.0 .
 sudo docker run -p 5149:8080 atlasbank_instant-transfer-service:1.0
+```
+Service would run now u can Access : http://localhost:5149/swagger/index.html
+To test different cases 
+
+## Run Service with kubernetes
+before running the service start the database using docker compose from here : [Go to GettingStarted](#GettingStarted)
+```bash
+kubectl apply -f instanttransfers-deployment.yaml
+kubectl get pods -n instanttransfers
 ```
 Service would run now u can Access : http://localhost:5149/swagger/index.html
 To test different cases 
