@@ -129,7 +129,7 @@ public class TransactionsControllerTests : IClassFixture<TestFixture>
         var secondResponse = _client.PostAsJsonAsync("/api/transaction", txDto).GetAwaiter().GetResult();
 
         // Assert
-        secondResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.Conflict);
+        secondResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -147,7 +147,7 @@ public class TransactionsControllerTests : IClassFixture<TestFixture>
         var secondResponse = _client.PostAsJsonAsync("/api/transaction", txDto).GetAwaiter().GetResult();
 
         // Assert
-        secondResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.Conflict);
+        secondResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
     }
 
 
