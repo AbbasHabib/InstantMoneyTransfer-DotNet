@@ -24,9 +24,6 @@ public class Transaction
     [Required]
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
-    [MaxLength(50)]
-    public string RequestId { get; set; } = Guid.NewGuid().ToString();
-
     [ForeignKey(nameof(FromAccountId))]
     public virtual Account FromAccount { get; set; } = null!;
 
