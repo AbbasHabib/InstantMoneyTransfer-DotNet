@@ -5,6 +5,5 @@ public record TransactionResponseDto(
     long FromAccountId,
     long ToAccountId,
     decimal Amount,
-    DateTime Timestamp,
-    string RequestId
+    DateTime Timestamp
 );

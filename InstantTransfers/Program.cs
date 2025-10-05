@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContextPool<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")),
-    poolSize: 128);
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    );
 
 builder.Services.AddRouting(options =>
     {
@@ -37,19 +37,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    // ApplyMigrations(app);
 }
 
 app.MapGet("/", () => "Hello World!");
 app.MapControllers();
-// app.MapIdentityApi<User>();
 
 app.Run();
 
 
-// static void ApplyMigrations(IApplicationBuilder app)
-// {
-//     using var scope = app.ApplicationServices.CreateScope();
-//     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//     dbContext.Database.Migrate();
-// }
+public partial class Program { }

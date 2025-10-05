@@ -5,18 +5,24 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstantTransfers", "InstantTransfers\InstantTransfers.csproj", "{28512C10-05B2-493E-96DE-19DD7E8691EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstantTransfers.Tests", "InstantTransfers.Tests\InstantTransfers.Tests.csproj", "{7A572EFC-2FEA-4492-BF25-D814B5138E83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{28512C10-05B2-493E-96DE-19DD7E8691EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{28512C10-05B2-493E-96DE-19DD7E8691EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28512C10-05B2-493E-96DE-19DD7E8691EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28512C10-05B2-493E-96DE-19DD7E8691EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A572EFC-2FEA-4492-BF25-D814B5138E83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A572EFC-2FEA-4492-BF25-D814B5138E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A572EFC-2FEA-4492-BF25-D814B5138E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A572EFC-2FEA-4492-BF25-D814B5138E83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

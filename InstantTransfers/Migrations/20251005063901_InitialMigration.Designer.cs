@@ -61,11 +61,6 @@ namespace InstantTransfers.Migrations
                     b.Property<long>("FromAccountId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("RequestId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
 

@@ -3,6 +3,7 @@ using InstantTransfers.Infrastructure;
 using InstantTransfers.Models;
 using InstantTransfers.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using InstantTransfers.CustomExceptions;
 
 namespace InstantTransfers.Services.Implementations;
 
@@ -75,17 +76,17 @@ public class TransactionService : ITransactionService
 
             _context.Transactions.Add(tx);
             await _context.SaveChangesAsync();
-
             await dbTransaction.CommitAsync();
 
             return new TransactionResponseDto(
                 tx.Id, tx.FromAccountId, tx.ToAccountId, tx.Amount, tx.Timestamp
             );
         }
-        catch
+        catch (Exception e)
         {
             await dbTransaction.RollbackAsync();
-            throw;
+            // TODO: only for debugging, remove in production
+            throw new TransactionFailedException("Transaction failed: " + e.Message);
         }
     }
 

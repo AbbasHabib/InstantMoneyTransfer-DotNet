@@ -1,19 +1,14 @@
+using InstantTransfers.CustomExceptions;
 using InstantTransfers.DTOs.Transaction;
-using InstantTransfers.Services;
+using InstantTransfers.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InstantTransfers.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TransactionController : ControllerBase
+public class TransactionController(ITransactionService _service) : ControllerBase
 {
-    private readonly TransactionService _service;
-
-    public TransactionController(TransactionService service)
-    {
-        _service = service;
-    }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TransactionResponseDto>>> GetAll()
@@ -40,6 +35,15 @@ public class TransactionController : ControllerBase
         catch (InvalidOperationException ex)
         {
             return BadRequest(ex.Message);
+        }
+        catch(TransactionFailedException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception e)
+        {
+            // TODO: only for debugging, remove in production
+            return BadRequest("An error occurred while processing the transaction. " + e.Message);
         }
     }
 
