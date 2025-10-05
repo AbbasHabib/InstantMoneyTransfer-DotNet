@@ -19,13 +19,6 @@ builder.Services.AddRouting(options =>
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
-// builder.Services.AddAuthorization();
-// builder.Services.AddAuthentication();
-
-// builder.Services.AddIdentityApiEndpoints<User>()
-//     .AddEntityFrameworkStores<AppDbContext>();
-
-
 // User Services
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
@@ -33,12 +26,12 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
+// SWAGGER is needed in all environments for testing
+app.UseSwagger();
+app.UseSwaggerUI();
+
+// Kept to track if app is running
 app.MapGet("/", () => "Hello World!");
 app.MapControllers();
 
