@@ -47,3 +47,25 @@ Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, dupl
 ---
 
 ## 🐳 Run with Docker
+
+## Packages used
+```bash
+    dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL --version 8.0.11
+```
+
+
+Benefits of DbContext Pooling:
+Reduced Overhead: By reusing DbContext instances, you reduce the cost associated with creating and disposing of DbContext objects.
+Improved Performance: Pooling can lead to better performance in high-traffic applications by reducing the time spent on DbContext initialization and disposal.
+Efficient Resource Utilization: Pooling helps in efficient utilization of resources, especially in scenarios where DbContext instances are frequently created and disposed of.
+
+## add the DB migration
+```bash
+    dotnet ef database update
+```
+
+## add databse connection string to you user-secrets
+```bash
+    dotnet user-secrets init
+    dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=127.0.0.1;Port=5432;Database=atlasbank;Username=postgres;Password=somepassword"
+```
