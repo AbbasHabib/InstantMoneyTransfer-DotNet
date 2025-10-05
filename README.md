@@ -17,10 +17,20 @@ Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, dupl
 ---
 
 ## Getting Started
+1- Start the Databse Server using docker
+Notice Postgresql will the latest OutputScript.sql from InstantTransfers and migrate it to the DB
+```bash
+cd postgresql
+sudo docker compose up -d
+```
+2- Run the Service with Docker
 ```bash
 ## inside repo top dir
 sudo docker build -t atlasbank_instant-transfer-service:1.0 .
+sudo docker run -p 5149:8080 atlasbank_instant-transfer-service:1.0
 ```
+Service would run now u can Access : http://localhost:5149/swagger/index.html
+To test different cases 
 
 
 ## 🧠 Core Challenges & Solutions

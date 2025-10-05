@@ -25,9 +25,6 @@ WORKDIR /app
 # Copy published files from the build stage
 COPY --from=build /app ./
 
-# Expose port 80
-EXPOSE 80
-
 # # Environment variables (optional)
 # ENV DOTNET_RUNNING_IN_CONTAINER=true
 # ENV DOTNET_PRINT_TELEMETRY_MESSAGE=false
