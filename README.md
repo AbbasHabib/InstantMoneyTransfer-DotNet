@@ -48,6 +48,15 @@ To test different cases
 # inside repo top dir
 dotnet build
 dotnet test InstantTransfers.Tests
+### ...
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int64)], CommandType='Text', CommandTimeout='30']
+      SELECT t."Id", t."Amount", t."FromAccountId", t."Timestamp", t."ToAccountId"
+      FROM "Transactions" AS t
+      WHERE t."Id" = @__p_0
+      LIMIT 1
+
+Passed!  - Failed:     0, Passed:    14, Skipped:     0, Total:    14, Duration: 5 s - InstantTransfers.Tests.dll (net8.0)
 ```
 
 ## Challenges & Solutions
@@ -104,6 +113,20 @@ Both Point 1 and 2 fix these issues.
 
 ### 4. **System Overload**
 Suggestion is using database connection pools and configure the number of pools on the system.
+
+### 5. **Balance should never go -ve**
+A DB constraint has been added 
+```C#
+modelBuilder.Entity<Account>()
+    .ToTable(t => t.HasCheckConstraint("CK_Accounts_Balance_NonNegative", "\"Balance\" >= 0"));
+```
+And on the dotnet app the Account Balance in +ve range
+```C#
+[Column(TypeName = "decimal(18,2)")]
+[Range(0, double.MaxValue)]
+public decimal Balance { get; set; } = 0;
+```
+so on account creation it fails directly incase of -ve account balance creation
 
 ---
 

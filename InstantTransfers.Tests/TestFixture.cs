@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-
+[CollectionDefinition("Database collection")]
 public class TestFixture : WebApplicationFactory<Program>
 {
     public AppDbContext DbContext { get; private set; }

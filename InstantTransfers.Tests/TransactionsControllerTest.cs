@@ -7,6 +7,7 @@ using Xunit;
 
 namespace InstantTransfers.Tests;
 
+[Collection("Database collection")]
 public class TransactionsControllerTests : IClassFixture<TestFixture>
 {
     private readonly TestFixture _application;
