@@ -20,5 +20,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         modelBuilder.Entity<Transaction>()
             .HasIndex(t => new { t.FromAccountId, t.ToAccountId, t.Timestamp })
             .IsUnique();
+        
+        modelBuilder.Entity<Account>()
+            .ToTable(t => t.HasCheckConstraint("CK_Accounts_Balance_NonNegative", "\"Balance\" >= 0"));
     }
 }
