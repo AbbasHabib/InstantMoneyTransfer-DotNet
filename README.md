@@ -5,6 +5,188 @@ Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, dupl
 
 ---
 
+# Walkthrough
+
+## Key Description
+
+The implementation focuses on preserving **monetary correctness** (no lost or duplicated funds) and **safety under concurrency**, keeping in mind that this is a **microservice** — meaning the database might be shared and modified by other microservices.
+
+For instance, a **Django** or **Spring** application might also have access to modify the account balances.
+
+---
+
+## Architecture Walkthrough
+
+### Overview
+
+The system is designed to expose REST endpoints for:
+
+- **Account creation**
+- **Money transfers between accounts**
+- **User management**
+
+Each user can own one or more accounts.  
+A transaction is only accepted if it originates from the user who owns the source account.
+
+---
+
+### Implementation Progress
+
+**What has been done:**
+
+- Defined the **Account** and **Transaction** entities and migrated them to the database.  
+- Added database constraints on the **Accounts** table to ensure that the balance never goes below zero.  
+- Created REST endpoints as described in [API Endpoints](#api-endpoints).  
+- Created a **unique index** on `(AccountId, ToAccountId, Timestamp)` for **idempotency**.
+
+#### Transactions and Accounts Tables
+
+![alt text](imgs/Account-TransactionTables.png)
+
+**Why:**
+
+The **Accounts** and **Transactions** tables were intentionally kept simple for this project.  
+A constraint was added on the `Accounts.Balance` column to prevent negative balances.  
+The unique index `(AccountId, ToAccountId, Timestamp)` ensures **idempotency** — preventing duplicate transaction entries.
+
+Although idempotency could alternatively be achieved using a client-generated **idempotency key**, this would require additional logic on the client side.  
+The current approach — using `IX_Transactions_FromAccountId_ToAccountId_Timestamp` ON `(AccountId, ToAccountId, Timestamp)` — is simpler and reliable, where the **Timestamp has to be send by the client in correct UTC format and the backend has to verify that the timestamp from the client is valid UTC time and isn't from future and is not far away from current time by certain defined delta**, effectively handling network hiccups and duplicate requests.
+
+
+Tradeoff: Dependency on the client app to send valid UTC timestamp.
+Benefit: Prevents duplicate transactions without making new column for idempotency-key, and relying on the client app to send valid idempotency-key.
+
+WIP: checking valid time from the client side is not yet implemented in the system.
+
+
+---
+
+## Service Layer
+
+Business logic resides in **services** (e.g., `TransactionService`), with controllers delegating to these services.  
+Services then delegate persistence operations to repositories, following the **Controller–Service–Repository** pattern.
+
+**What has been done:**
+
+- Implemented REST API endpoints with all business logic initially in controllers.  
+- Performed integration testing on endpoints and database reflection using PostgreSQL.  
+- After reaching an **MVP**, refactored the code for better **decoupling and abstraction**, moving business logic into **injectable services** (e.g., `ITransactionService`).
+
+![alt text](imgs/abstracted-service.png)
+
+**Why:**
+
+Following **separation of concerns** improves testability and maintainability.  
+By isolating business logic in abstract services and persistence logic in repositories (e.g., `IAccountRepository`), changes in one area do not affect others.
+
+
+**Injected service example:**
+
+```csharp
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+```
+
+tradeoff: Controller–Service–Repository pattern makes slightly more boilerplate.
+benefit & why used: Clear separation of concerns
+
+WIP: delegation of persistence operations to repositories.
+
+
+---
+
+## Persistence
+
+**Used:** PostgreSQL with EF Core (Code-First approach)
+
+**Why:**
+
+- PostgreSQL provides strong **data integrity** and **ACID compliance**, both critical for financial transactions.  
+- The **Code-First** approach simplifies database migrations and code sharing between dev environments.
+
+The system relies on **pessimistic locking** for affected rows during transactions.  
+This ensures reliability but can slow down concurrent requests involving the same accounts.
+
+---
+
+## Concurrency Control
+
+Multiple money transfer requests can be processed concurrently, therefore **Pessimistic locking** had been used to avoid racing and data corruption.
+
+### Example Transactions
+
+**Transaction 1:**
+
+```json
+{
+  "fromAccountId": 1,
+  "toAccountId": 2,
+  "amount": 50
+}
+```
+
+**Transaction 2:**
+
+```json
+{
+  "fromAccountId": 2,
+  "toAccountId": 1,
+  "amount": 300
+}
+```
+
+In this case:
+
+- **Transaction 1** locks rows 1 and 2.  
+- **Transaction 2** is blocked until **Transaction 1** is completed or rolled back.
+
+This design ensures **data reliability**, but trade-off are:
+
+- it can lead to **busy waits** when accounts are involved in other ongoing transactions.  
+- Since EF Core doesn’t natively support pessimistic locking, **raw SQL queries** are used for locking.
+
+**Alternative Concurrency Techniques supported by EF:** and why not used.
+
+***1. Row Versioning (Optimistic Concurrency)***
+
+```csharp
+[Timestamp]
+public byte[] RowVersion { get; set; }
+```
+
+EF Core checks the `RowVersion` column during updates and fails if it has changed since the record was read.
+
+**Why not used:**  
+Other frameworks (e.g., Spring or Django) sharing the same database wouldn’t update this column, which could lead to data corruption.
+
+---
+
+***2. EF Core’s `[ConcurrencyCheck]` Attribute (Optimistic Concurrency)***
+
+```csharp
+[ConcurrencyCheck]
+public decimal Balance { get; set; }
+```
+
+EF Core compares the `Balance` value before and after the transaction and fails if it has changed in between.
+
+**Why not used:**  
+This approach requires implementing a **retry mechanism** for failed transactions, increasing system complexity.
+
+---
+
+## Final Decision
+
+**Pessimistic locking** was chosen despite its trade-offs because it is:
+
+- **Highly reliable**  
+- **Framework-agnostic** (works regardless of EF Core, Spring Data, etc.)  
+- **Safe for shared databases**
+
+This approach ensures **data consistency** across all backend applications that share the same database.
+
+
+---
+
 ## 🚀 Features
 
 - Create accounts with initial balances.  
@@ -107,7 +289,7 @@ Suggestion is using database connection pools and configure the number of pools 
 
 ---
 
-## API Endpoints
+## API-Endpoints
 
 ### Account Endpoints
 | Method | Endpoint            | Description            |
