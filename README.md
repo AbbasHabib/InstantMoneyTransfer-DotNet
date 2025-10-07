@@ -158,8 +158,6 @@ EF Core checks the `RowVersion` column during updates and fails if it has change
 **Why not used:**  
 Other frameworks (e.g., Spring or Django) sharing the same database wouldn’t update this column, which could lead to data corruption.
 
----
-
 ***2. EF Core’s `[ConcurrencyCheck]` Attribute (Optimistic Concurrency)***
 
 ```csharp
@@ -172,9 +170,7 @@ EF Core compares the `Balance` value before and after the transaction and fails 
 **Why not used:**  
 This approach requires implementing a **retry mechanism** for failed transactions, increasing system complexity.
 
----
-
-## Final Decision
+#### Decision
 
 **Pessimistic locking** was chosen despite its trade-offs because it is:
 
@@ -187,16 +183,6 @@ This approach ensures **data consistency** across all backend applications that 
 
 ---
 
-## 🚀 Features
-
-- Create accounts with initial balances.  
-- Perform atomic money transfers between accounts.  
-- Prevent negative balances.  
-- Ensure **idempotency** no duplicated or lost transfers.  
-- Handle concurrent transfers safely.  
-- Fully containerized with **Docker** and ready for **Kubernetes**.
-
----
 
 # GettingStarted
 ## 🐳 Run with Docker
