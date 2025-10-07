@@ -5,6 +5,17 @@ Built with **.NET 8**, **PostgreSQL**, designed to handle high concurrency, dupl
 
 ---
 
+## Features
+
+- Create accounts with initial balances.  
+- Perform atomic money transfers between accounts.  
+- Prevent negative balances.  
+- Ensure **idempotency** no duplicated or lost transfers.  
+- Handle concurrent transfers safely.  
+- Fully containerized with **Docker** and ready for **Kubernetes**.
+
+---
+
 # Walkthrough
 
 ## Key Description
@@ -27,8 +38,6 @@ The system is designed to expose REST endpoints for:
 
 Each user can own one or more accounts.  
 A transaction is only accepted if it originates from the user who owns the source account.
-
----
 
 ### Implementation Progress
 
